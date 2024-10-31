@@ -1,10 +1,22 @@
 #include "parser.h"
 
 void JSON::Parser::parse() {
-    JSON = parseElem();
+    try {
+        cur_tok = lex.gettok();
+        JSON = parseElem();
+    } catch (std::invalid_argument const &e) {
+        std::cerr << e.what() << std::endl;
+        exit(1);
+    }
 }
 
-std::unique_ptr <JSON::JsonElement> &&JSON::Parser::parseElem() {
+bool JSON::Parser::setFileInput(const std::string &name_of_file) {
+    if (lex.InitInputFile(name_of_file))
+        return true;
+    return false;
+}
+
+std::unique_ptr<JSON::JsonElement> JSON::Parser::parseElem() {
     switch (cur_tok) {
         case tok_fgOpBr:
             return parseMap();
@@ -21,7 +33,7 @@ std::unique_ptr <JSON::JsonElement> &&JSON::Parser::parseElem() {
     }
 }
 
-std::unique_ptr <JSON::IntElem> &&JSON::Parser::parseInt() {
+std::unique_ptr<JSON::IntElem> JSON::Parser::parseInt() {
     bool positive_sign = true;
 
     while (cur_tok == tok_minus || cur_tok == tok_plus) {
@@ -40,17 +52,19 @@ std::unique_ptr <JSON::IntElem> &&JSON::Parser::parseInt() {
     return std::make_unique<JSON::IntElem>(-value);
 }
 
-std::unique_ptr <JSON::StringElem> &&JSON::Parser::parseString() {
+std::unique_ptr<JSON::StringElem> JSON::Parser::parseString() {
     matchTokenAndGoNext(tok_quote);
     matchToken(tok_identifier);
 
     auto name = lex.identifierStr();
+
+    cur_tok = lex.gettok();
     matchTokenAndGoNext(tok_quote);
 
     return std::make_unique<JSON::StringElem>(std::move(name));
 }
 
-std::unique_ptr <JSON::MapElem> &&JSON::Parser::parseMap() {
+std::unique_ptr<JSON::MapElem> JSON::Parser::parseMap() {
     matchTokenAndGoNext(tok_fgOpBr);
     auto res = std::make_unique<JSON::MapElem>();
 
@@ -65,18 +79,19 @@ std::unique_ptr <JSON::MapElem> &&JSON::Parser::parseMap() {
 
         auto name = lex.identifierStr();
 
+        cur_tok = lex.gettok();
         matchTokenAndGoNext(tok_quote);
         matchTokenAndGoNext(tok_column);
 
         res->addNewEntry(name, parseElem());
-    } while (cur_tok == tok_comma && (cur_tok == lex.gettok()));
+    } while (cur_tok == tok_comma && (cur_tok = lex.gettok()));
 
     matchTokenAndGoNext(tok_fgClBr);
 
     return std::move(res);
 }
 
-std::unique_ptr <JSON::ArrayElem> &&JSON::Parser::parseVector() {
+std::unique_ptr<JSON::ArrayElem> JSON::Parser::parseVector() {
     matchTokenAndGoNext(tok_sqOpBr);
     auto res = std::make_unique<JSON::ArrayElem>();
 
@@ -85,8 +100,9 @@ std::unique_ptr <JSON::ArrayElem> &&JSON::Parser::parseVector() {
         return std::move(res);
     }
 
-    do res->addNewEntry(parseElem());
-    while (cur_tok == tok_comma && (cur_tok == lex.gettok()));
+    do {
+        res->addNewEntry(parseElem());
+    } while (cur_tok == tok_comma && (cur_tok = lex.gettok()));
 
     matchTokenAndGoNext(tok_sqClBr);
 
@@ -99,6 +115,9 @@ void JSON::Parser::matchToken(Token token) {
                 "ERROR. Unmatched tokens. Expected:" + std::to_string(token) + ". But got:" + std::to_string(cur_tok));
 }
 
-void JSON::Parser::matchTokenAndGoNext(Token) {
-
+void JSON::Parser::matchTokenAndGoNext(Token token) {
+    if (cur_tok != token)
+        throw std::invalid_argument(
+                "ERROR. Unmatched tokens. Expected:" + std::to_string(token) + ". But got:" + std::to_string(cur_tok));
+    cur_tok = lex.gettok();
 }

@@ -10,16 +10,18 @@ namespace JSON {
     public:
         void parse();
 
+        bool setFileInput(const std::string &);
+
     private:
-        std::unique_ptr<JSON::JsonElement>&& parseElem();
+        std::unique_ptr<JSON::JsonElement> parseElem();
 
-        std::unique_ptr<JSON::IntElem>&& parseInt();
+        std::unique_ptr<JSON::IntElem> parseInt();
 
-        std::unique_ptr<JSON::StringElem>&& parseString();
+        std::unique_ptr<JSON::StringElem> parseString();
 
-        std::unique_ptr<JSON::MapElem>&& parseMap();
+        std::unique_ptr<JSON::MapElem> parseMap();
 
-        std::unique_ptr<JSON::ArrayElem>&& parseVector();
+        std::unique_ptr<JSON::ArrayElem> parseVector();
 
         void matchToken(Token);
 

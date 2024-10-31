@@ -7,6 +7,7 @@ include_directories(JSON_parser/Common)
 
 include_directories(JSON_parser/Lexer)
 include_directories(JSON_parser/JSON)
+include_directories(JSON_parser/Expr)
 
 set(
         SOURCE_FILES
@@ -15,6 +16,8 @@ set(
 
         JSON_parser/Lexer/lexer.cpp
         JSON_parser/JSON/parser.cpp
+        JSON_parser/JSON/JSON.cpp
+        JSON_parser/Expr/AST_Expr.cpp
 
         JSON_parser/main.cpp)
 

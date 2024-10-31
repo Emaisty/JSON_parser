@@ -51,6 +51,8 @@ namespace JSON {
 
         void addNewEntry(const std::string&, std::unique_ptr<JsonElement>&&);
 
+        std::unique_ptr<JsonElement>* get_item(const std::string&);
+
     private:
         std::map<std::string,std::unique_ptr<JsonElement>> json_map;
 
