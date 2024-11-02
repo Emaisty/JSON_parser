@@ -3,12 +3,17 @@
 
 #include <string>
 #include <vector>
+#include <list>
+#include <map>
 
 #include "lexer.h"
 #include "JSON.h"
 
 
 namespace AST_EXPR {
+
+
+    
 
     // basic abstract class
     class Node {
@@ -17,7 +22,7 @@ namespace AST_EXPR {
 
         virtual ~Node() = default;
 
-        virtual std::unique_ptr<JSON::JsonElement> *evaluate(std::unique_ptr<JSON::JsonElement> *) = 0;
+        virtual std::unique_ptr<JSON::JsonElement> *evaluate(JSON::Context &) = 0;
 
     private:
 
@@ -30,7 +35,7 @@ namespace AST_EXPR {
 
         Variable(std::string &&new_name) : name(std::move(new_name)) {}
 
-        std::unique_ptr<JSON::JsonElement> *evaluate(std::unique_ptr<JSON::JsonElement> *) override;
+        std::unique_ptr<JSON::JsonElement> *evaluate(JSON::Context &) override;
 
     private:
         std::string name;
@@ -44,7 +49,7 @@ namespace AST_EXPR {
 
         Number(long long new_value) : value(new_value) {}
 
-        std::unique_ptr<JSON::JsonElement> *evaluate(std::unique_ptr<JSON::JsonElement> *) override;
+        std::unique_ptr<JSON::JsonElement> *evaluate(JSON::Context &) override;
 
     private:
         long long value;
@@ -58,7 +63,7 @@ namespace AST_EXPR {
 
         FuncCall(std::unique_ptr<Node> &&, std::vector<std::unique_ptr<Node>> &&);
 
-        std::unique_ptr<JSON::JsonElement> *evaluate(std::unique_ptr<JSON::JsonElement> *) override;
+        std::unique_ptr<JSON::JsonElement> *evaluate(JSON::Context &) override;
 
     private:
         std::unique_ptr<Node> name;
@@ -73,7 +78,7 @@ namespace AST_EXPR {
 
         MemberAccess(std::unique_ptr<Node> &&, std::string &&);
 
-        std::unique_ptr<JSON::JsonElement> *evaluate(std::unique_ptr<JSON::JsonElement> *) override;
+        std::unique_ptr<JSON::JsonElement> *evaluate(JSON::Context &) override;
 
     private:
         std::unique_ptr<Node> origin_map;
@@ -89,7 +94,7 @@ namespace AST_EXPR {
 
         ElementAccess(std::unique_ptr<Node> &&, std::unique_ptr<Node> &&);
 
-        std::unique_ptr<JSON::JsonElement> *evaluate(std::unique_ptr<JSON::JsonElement> *) override;
+        std::unique_ptr<JSON::JsonElement> *evaluate(JSON::Context &) override;
 
     private:
         std::unique_ptr<Node> origin_array, member;
@@ -107,7 +112,7 @@ namespace AST_EXPR {
 
         BinOP(Operator, std::unique_ptr<Node> &&, std::unique_ptr<Node> &&);
 
-        std::unique_ptr<JSON::JsonElement> *evaluate(std::unique_ptr<JSON::JsonElement> *) override;
+        std::unique_ptr<JSON::JsonElement> *evaluate(JSON::Context &) override;
 
     private:
         std::unique_ptr<Node> r_node, l_node;
@@ -127,7 +132,7 @@ namespace AST_EXPR {
 
         UnOP(Operator, std::unique_ptr<Node> &&);
 
-        std::unique_ptr<JSON::JsonElement> *evaluate(std::unique_ptr<JSON::JsonElement> *) override;
+        std::unique_ptr<JSON::JsonElement> *evaluate(JSON::Context &) override;
 
     private:
         std::unique_ptr<Node> node;
@@ -142,6 +147,8 @@ namespace AST_EXPR {
         void parse();
 
         bool setExpressionInput(std::string &&);
+
+        void evalAPrint(std::unique_ptr<JSON::JsonElement> *);
 
     private:
         std::unique_ptr<Node> E5();

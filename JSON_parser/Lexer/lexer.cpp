@@ -120,9 +120,9 @@ Token Lexer::readSymbol() {
         case '-':
             return tok_minus;
         case '*':
-            return tok_plus;
+            return tok_asterisk;
         case '/':
-            return tok_minus;
+            return tok_bkSlash;
         case '{':
             return tok_fgOpBr;
         case '}':

@@ -12,6 +12,8 @@ namespace JSON {
 
         bool setFileInput(const std::string &);
 
+        std::unique_ptr<JSON::JsonElement>* getJson();
+
     private:
         std::unique_ptr<JSON::JsonElement> parseElem();
 

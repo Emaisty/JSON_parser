@@ -21,5 +21,7 @@ int main(int argc, char *argv[]) {
     }
     E_p.parse();
 
+    E_p.evalAPrint(J_p.getJson());
+
     return 0;
 }

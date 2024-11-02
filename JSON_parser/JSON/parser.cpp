@@ -16,6 +16,10 @@ bool JSON::Parser::setFileInput(const std::string &name_of_file) {
     return false;
 }
 
+std::unique_ptr<JSON::JsonElement> *JSON::Parser::getJson() {
+    return &JSON;
+}
+
 std::unique_ptr<JSON::JsonElement> JSON::Parser::parseElem() {
     switch (cur_tok) {
         case tok_fgOpBr:
