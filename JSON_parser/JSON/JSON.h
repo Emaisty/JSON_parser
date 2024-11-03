@@ -7,6 +7,7 @@
 #include <map>
 #include <iostream>
 
+
 namespace JSON {
 
     struct Context;
@@ -110,6 +111,9 @@ namespace JSON {
 
     };
 
+    typedef std::function<std::unique_ptr<JSON::JsonElement> *(
+            std::vector<std::unique_ptr<JSON::JsonElement> *>, Context &)> json_function;
+
     struct Context {
         std::unique_ptr<JsonElement> *top_element;
 
@@ -123,8 +127,7 @@ namespace JSON {
 
         std::unique_ptr<JSON::JsonElement> *addNewNumberElem(std::unique_ptr<JSON::JsonElement> &&);
 
-        std::list<std::pair<std::string, std::function<std::unique_ptr<JSON::JsonElement> *(
-                std::vector<std::unique_ptr<JSON::JsonElement> *>, Context &)>>> init_funcs = {
+        std::list<std::pair<std::string, json_function>> init_funcs = {
                 {"size", [](std::vector<std::unique_ptr<JSON::JsonElement> *> vec,
                             Context &ctx) {
                     if (vec.size() == 0)

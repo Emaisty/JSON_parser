@@ -5,7 +5,7 @@ void JSON::IntElem::print(std::ostream &oss) const {
 }
 
 void JSON::StringElem::print(std::ostream &oss) const {
-    oss << name;
+    oss << '\"' << name << '\"';
 }
 
 std::function<std::unique_ptr<JSON::JsonElement> *(std::vector<std::unique_ptr<JSON::JsonElement> *>,
@@ -39,7 +39,7 @@ const std::map<std::string, std::unique_ptr<JSON::JsonElement>> *JSON::MapElem::
 }
 
 void JSON::MapElem::print(std::ostream &oss) const {
-    oss << "{ ";
+    oss << "{";
     for (auto i = json_map.begin(); i != json_map.end(); ++i) {
         oss << i->first << " : ";
         i->second->print(oss);
@@ -68,7 +68,7 @@ const std::vector<std::unique_ptr<JSON::JsonElement>> *JSON::ArrayElem::getArray
 }
 
 void JSON::ArrayElem::print(std::ostream &oss) const {
-    oss << "[ ";
+    oss << "[";
     for (auto i = 0; i < json_vector.size(); ++i) {
         json_vector[i]->print(oss);
         if (json_vector.size() - i != 1)
