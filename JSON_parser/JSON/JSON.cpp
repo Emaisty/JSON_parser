@@ -19,6 +19,8 @@ void JSON::FuncElem::print(std::ostream &oss) const {
 }
 
 void JSON::MapElem::addNewEntry(const std::string &name, std::unique_ptr<JsonElement> &&element) {
+    if (json_map.find(name) != json_map.end())
+        throw std::invalid_argument("ERROR. Item with such name (" + name + ") already exists in this object.");
     json_map[name] = std::move(element);
 }
 

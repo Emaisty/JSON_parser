@@ -16,6 +16,8 @@ bool Lexer::InitInputString(std::string &&new_expression) {
 
 bool Lexer::InitInputFile(const std::string &file_name) {
     expression = "";
+    if (file.is_open())
+        file.close();
 
     file.open(file_name);
     if (!file.is_open())
@@ -144,6 +146,6 @@ Token Lexer::readSymbol() {
         case ':':
             return tok_column;
         default:
-            throw std::invalid_argument(&"ERROR. Unknown symbol "[(char) pr_symb]);
+            throw std::invalid_argument("kekjsdklfjksldfj sdklfjsdjfklsdjfkl");
     }
 }

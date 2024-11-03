@@ -33,7 +33,7 @@ std::unique_ptr<JSON::JsonElement> JSON::Parser::parseElem() {
         case tok_number:
             return parseInt();
         default:
-            throw std::invalid_argument("");
+            throw std::invalid_argument("ERROR. Unknown type.");
     }
 }
 
@@ -116,12 +116,14 @@ std::unique_ptr<JSON::ArrayElem> JSON::Parser::parseVector() {
 void JSON::Parser::matchToken(Token token) {
     if (cur_tok != token)
         throw std::invalid_argument(
-                "ERROR. Unmatched tokens. Expected:" + std::to_string(token) + ". But got:" + std::to_string(cur_tok));
+                "ERROR. Unmatched tokens. Expected:" + std::to_string(token) + ". But got:" +
+                std::to_string(cur_tok));
 }
 
 void JSON::Parser::matchTokenAndGoNext(Token token) {
     if (cur_tok != token)
         throw std::invalid_argument(
-                "ERROR. Unmatched tokens. Expected:" + std::to_string(token) + ". But got:" + std::to_string(cur_tok));
+                "ERROR. Unmatched tokens. Expected:" + std::to_string(token) + ". But got:" +
+                std::to_string(cur_tok));
     cur_tok = lex.gettok();
 }

@@ -251,6 +251,12 @@ std::unique_ptr<AST_EXPR::Node> AST_EXPR::Parser::E0() {
             matchTokenAndGoNext(tok_rnClBr);
             return res;
         }
+        case tok_sqOpBr: {
+            cur_tok = lex.gettok();
+            auto elem = EXPR();
+            matchTokenAndGoNext(tok_sqClBr);
+            return std::make_unique<AST_EXPR::ElementAccess>(std::make_unique<AST_EXPR::Variable>(""), std::move(elem));
+        }
         default:
             throw std::invalid_argument("");
     }

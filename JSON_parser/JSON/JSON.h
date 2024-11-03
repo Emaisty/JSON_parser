@@ -132,7 +132,7 @@ namespace JSON {
                     if (vec.size() > 1)
                         throw std::invalid_argument("ERROR. Function size can take only 1 argument.");
                     auto item = vec[0];
-                    if (!dynamic_cast<JSON::MapElem *>(item->get()) || !dynamic_cast<JSON::ArrayElem *>(item->get()))
+                    if (!dynamic_cast<JSON::MapElem *>(item->get()) && !dynamic_cast<JSON::ArrayElem *>(item->get()))
                         throw std::invalid_argument(
                                 "ERROR. Function size can take as an argument only object or array.");
                     if (dynamic_cast<JSON::MapElem *>(item->get()))

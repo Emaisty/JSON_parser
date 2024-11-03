@@ -3,6 +3,7 @@
 
 #include "lexer.h"
 #include "JSON.h"
+#include <iostream>
 
 namespace JSON {
 
