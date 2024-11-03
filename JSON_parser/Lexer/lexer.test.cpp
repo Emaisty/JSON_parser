@@ -20,11 +20,11 @@ SCENARIO("Lexer fail on non existed file") {
 
 SCENARIO("Lexer can open file") {
 
-    std::ofstream outfile("test.txt");
+    std::ofstream outfile("tests.txt");
     outfile.close();
 
     Lexer lex;
-    REQUIRE(lex.InitInputFile("test.txt"));
+    REQUIRE(lex.InitInputFile("tests.txt"));
 }
 
 SCENARIO("Lexer unparsebale input") {

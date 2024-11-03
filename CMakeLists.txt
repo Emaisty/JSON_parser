@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.27)
-project(JSON_parser)
+project(j_eval)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -27,8 +27,8 @@ set (
         JSON_parser/Expr/AST_Expr.test.cpp
 )
 
-file(COPY ./test/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY tests/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-add_executable(JSON_parser ${SOURCE_FILES} JSON_parser/main.cpp)
+add_executable(j_eval ${SOURCE_FILES} JSON_parser/main.cpp)
 
-add_executable(unit_tests ${SOURCE_FILES} ${TEST_FILES} test/main.cpp)
+add_executable(unit_tests ${SOURCE_FILES} ${TEST_FILES} tests/main.cpp)

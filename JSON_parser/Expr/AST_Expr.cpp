@@ -13,12 +13,12 @@ std::unique_ptr<JSON::JsonElement> *AST_EXPR::Variable::evaluate(JSON::Context &
     }
 
     if (!dynamic_cast<JSON::MapElem *>(ctx.top_element->get()))
-        throw std::invalid_argument("");
+        throw std::invalid_argument("ERROR. Attempt to take item from not an object structure.");
 
     auto item = dynamic_cast<JSON::MapElem *>(ctx.top_element->get())->getItem(name);
 
     if (!item)
-        throw std::invalid_argument("");
+        throw std::invalid_argument("ERROR. Such item does not exist in the object.");
 
     return item;
 
@@ -58,12 +58,12 @@ std::unique_ptr<JSON::JsonElement> *AST_EXPR::MemberAccess::evaluate(JSON::Conte
     auto object = origin_map->evaluate(ctx);
 
     if (!dynamic_cast<JSON::MapElem *>(object->get()))
-        throw std::invalid_argument("");
+        throw std::invalid_argument("ERROR. Attempt to take item from not an object structure.");
 
     auto item = dynamic_cast<JSON::MapElem *>(object->get())->getItem(member);
 
     if (!item)
-        throw std::invalid_argument("");
+        throw std::invalid_argument("ERROR. Such item does not exist in the object.");
 
     return item;
 }
@@ -77,18 +77,18 @@ std::unique_ptr<JSON::JsonElement> *AST_EXPR::ElementAccess::evaluate(JSON::Cont
     auto array = origin_array->evaluate(ctx);
 
     if (!dynamic_cast<JSON::ArrayElem *>(array->get()))
-        throw std::invalid_argument("");
+        throw std::invalid_argument("ERROR. Attempt to access the element of non-array structure.");
 
     auto elem = member->evaluate(ctx);
 
     if (!dynamic_cast<JSON::IntElem *>(elem->get()))
-        throw std::invalid_argument("");
+        throw std::invalid_argument("ERROR. Access to the element of array must be with integer.");
 
     auto item = dynamic_cast<JSON::ArrayElem *>(array->get())->getElement(
             dynamic_cast<JSON::IntElem *>(elem->get())->getValue());
 
     if (!item)
-        throw std::invalid_argument("");
+        throw std::invalid_argument("ERROR. Such element does not exists in array.");
 
     return item;
 }
@@ -104,7 +104,7 @@ std::unique_ptr<JSON::JsonElement> *AST_EXPR::BinOP::evaluate(JSON::Context &ctx
     auto right = r_node->evaluate(ctx);
 
     if (!(dynamic_cast<JSON::IntElem *>(left->get())) || !(dynamic_cast<JSON::IntElem *>(right->get())))
-        throw std::invalid_argument("");
+        throw std::invalid_argument("ERROR. Attempt to execute binary operation over non-integer element.");
 
 
     return [&](long long l, long long r) {
@@ -122,7 +122,7 @@ std::unique_ptr<JSON::JsonElement> *AST_EXPR::UnOP::evaluate(JSON::Context &ctx)
     auto val = node->evaluate(ctx);
 
     if (!dynamic_cast<JSON::IntElem *>(val->get()))
-        throw std::invalid_argument("");
+        throw std::invalid_argument("ERROR. Unary operation can be executed only over integer.");
 
     return ctx.addNewNumberElem(std::make_unique<JSON::IntElem>(
             op == UNPLUS ? dynamic_cast<JSON::IntElem *>(val->get())->getValue()
@@ -133,8 +133,9 @@ void AST_EXPR::Parser::parse() {
     try {
         cur_tok = lex.gettok();
         expression = EXPR();
+        matchToken(tok_eof);
     } catch (std::invalid_argument const &e) {
-        std::cerr << e.what() << std::endl;
+        std::cout << e.what() << std::endl;
         exit(1);
     }
 }
@@ -149,7 +150,18 @@ void AST_EXPR::Parser::evalAPrint(std::unique_ptr<JSON::JsonElement> *json) {
     try {
         expression->evaluate(ctx)->get()->print(std::cout);
     } catch (std::invalid_argument const &e) {
-        std::cerr << e.what() << std::endl;
+        std::cout << e.what() << std::endl;
+        exit(1);
+    }
+}
+
+void AST_EXPR::Parser::eval(std::unique_ptr<JSON::JsonElement> *json){
+    JSON::Context ctx;
+    ctx.top_element = json;
+    try {
+        expression->evaluate(ctx)->get();
+    } catch (std::invalid_argument const &e) {
+        std::cout << e.what() << std::endl;
         exit(1);
     }
 }
@@ -258,7 +270,7 @@ std::unique_ptr<AST_EXPR::Node> AST_EXPR::Parser::E0() {
             return std::make_unique<AST_EXPR::ElementAccess>(std::make_unique<AST_EXPR::Variable>(""), std::move(elem));
         }
         default:
-            throw std::invalid_argument("");
+            return std::make_unique<AST_EXPR::Variable>("");
     }
 }
 

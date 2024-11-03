@@ -5,7 +5,7 @@ void JSON::Parser::parse() {
         cur_tok = lex.gettok();
         JSON = parseElem();
     } catch (std::invalid_argument const &e) {
-        std::cerr << e.what() << std::endl;
+        std::cout << e.what() << std::endl;
         exit(1);
     }
 }

@@ -150,6 +150,8 @@ namespace AST_EXPR {
 
         void evalAPrint(std::unique_ptr<JSON::JsonElement> *);
 
+        void eval(std::unique_ptr<JSON::JsonElement> *);
+
     private:
         std::unique_ptr<Node> E5();
 
