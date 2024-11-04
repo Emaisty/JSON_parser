@@ -5,6 +5,7 @@
 #include <vector>
 #include <list>
 #include <map>
+#include <memory>
 
 #include "lexer.h"
 #include "JSON.h"
