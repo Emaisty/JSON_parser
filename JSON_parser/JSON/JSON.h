@@ -6,6 +6,8 @@
 #include <list>
 #include <map>
 #include <iostream>
+#include <memory>
+#include <functional>
 
 
 namespace JSON {
