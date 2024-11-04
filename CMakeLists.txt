@@ -31,3 +31,4 @@ file(COPY tests/data DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(j_eval ${SOURCE_FILES} JSON_parser/main.cpp)
 
+add_executable(unit_tests ${SOURCE_FILES} ${TEST_FILES} tests/main.cpp)
