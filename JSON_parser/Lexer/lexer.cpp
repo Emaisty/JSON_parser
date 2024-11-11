@@ -146,6 +146,6 @@ Token Lexer::readSymbol() {
         case ':':
             return tok_column;
         default:
-            throw std::invalid_argument("kekjsdklfjksldfj sdklfjsdjfklsdjfkl");
+            throw std::invalid_argument("ERROR. Unknown char symbol.");
     }
 }

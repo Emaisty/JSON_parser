@@ -36,3 +36,6 @@ It is possible in the evaluation method to change the returning value from a poi
 
 It is possible to run functions to [parse a JSON file](https://github.com/Emaisty/JSON_parser/blob/51d5e3c1747f0bef18a474690ce40d3708af40ee/JSON_parser/JSON/parser.cpp#L3) and [parser for an expression](https://github.com/Emaisty/JSON_parser/blob/51d5e3c1747f0bef18a474690ce40d3708af40ee/JSON_parser/Expr/AST_Expr.cpp#L132) simultaneously. They are not dependent on each other and it would be very easy to implement, such as running these 2 functions with pthread library. It would only require a barrier before the evaluation function, which will wait for parsers to finish their work.
 
+### JSON::Context and its mess with the initial list of function
+
+I agree that it is not made in a proper way. Lambdas can be separated into separate static variables, which anyway on a stage of compilation will be inlined, but would make a code much more readable. Also, the function type should be replaced with the typedef. 
